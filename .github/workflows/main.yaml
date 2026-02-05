@@ -1,0 +1,32 @@
+name: Deploy Automático Henry Cloud
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Atualizar Servidor
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.AWS_IP }}
+          username: ${{ secrets.AWS_USER }}
+          key: ${{ secrets.AWS_SSH_KEY }}
+          script: |
+            cd ~/SEU_REPOSITORIO
+            git pull origin main
+            
+            # Atualizar Backend
+            cd server
+            pip3 install -r requirements.txt
+            pm2 restart api-henry || pm2 start app.py --name "api-henry"
+            
+            # Atualizar Frontend
+            cd ../client
+            npm install
+            npm run build
