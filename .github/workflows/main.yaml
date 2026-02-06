@@ -18,15 +18,14 @@ jobs:
           username: ${{ secrets.AWS_USER }}
           key: ${{ secrets.AWS_SSH_KEY }}
           script: |
-            cd ~/SEU_REPOSITORIO
+            # Entrar na pasta raiz do repositório na AWS
+            cd ~/gerenciador-rep || cd ~
             git pull origin main
             
-            # Atualizar Backend
-            cd server
-            pip3 install -r requirements.txt
-            pm2 restart api-henry || pm2 start app.py --name "api-henry"
-            
-            # Atualizar Frontend
-            cd ../client
+            # Entrar na pasta correta 'site' (em vez de client)
+            cd site
             npm install
             npm run build
+            
+            # Reiniciar o serviço
+            pm2 restart api-henry || echo "Processo não encontrado"
