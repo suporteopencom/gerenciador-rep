@@ -141,5 +141,3 @@ if __name__ == '__main__':
     init_db()
     threading.Thread(target=servidor_socket, daemon=True).start()
     app.run(host='0.0.0.0', port=5000)
-    
-    
